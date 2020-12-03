@@ -1,0 +1,39 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+
+```{r}
+data <- read.csv("flagswheaders.csv")
+data <- data[, 10:18]
+head(data)
+```
+
+```{r}
+library(OneR)
+```
+
+```{r}
+data$dominantcolour <- as.factor(data$dominantcolour)
+```
+
+
+```{r}
+set.seed(69)
+sampel <- sample(2, nrow(data), replace = T, prob = c(0.7, 0.3))
+training <- data[sampel == 1, ]
+testing <- data[sampel == 2, ]
+print(paste("Jumlah Train Data: ", nrow(training), "| Jumlah Test Data: ", nrow(testing)))
+```
+
+```{r}
+model.OneR <- OneR(dominantcolour~., data = training, verbose = TRUE)
+summary(model.OneR)
+```
+
+```{r}
+pc <- predict(model.OneR, testing, type = "class")
+eval_model(pc,testing)
+```
+
